@@ -1,0 +1,1 @@
+import{d as t,_ as n,h as r,o as s,a,i as c,b as l}from"./index-2308c9a5.js";const d=t({setup(){return{}}});function p(i,e,m,u,_,f){const o=r("el-card");return s(),a("div",null,[e[0]||(e[0]=c("div",{style:{width:"1rem",height:"1rem","background-color":"#000"}},null,-1)),l(o,{class:"fullscreen"})])}const $=n(d,[["render",p]]);export{$ as default};

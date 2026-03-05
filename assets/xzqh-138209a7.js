@@ -1,0 +1,1 @@
+import{a as e}from"./index-e199e7d4.js";async function o(){let a="";if(await e().then(async n=>{a=await r(n.data)}),a.length>0)return a}const r=a=>{for(const n in a)if(a[n].children)a[n].label=a[n].value,a[n].value=a[n].code,r(a[n].children);else return;return a};export{o as g};

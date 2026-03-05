@@ -1,0 +1,1 @@
+import{_ as t,o as _,a as s,z as o}from"./index-2308c9a5.js";const a={},n={class:"myStyle"};function c(e,r){return _(),s("div",n,[o(e.$slots,"default",{},void 0,!0)])}const l=t(a,[["render",c],["__scopeId","data-v-5a633bb6"]]);export{l as default};

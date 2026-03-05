@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="120px" height="40px" viewBox="0 0 120 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>矩形</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="2" transform="translate(-67.000000, -205.000000)" fill="#2C4BB4" stroke="#2C4BB4">
+            <g id="编组" transform="translate(67.000000, 205.000000)">
+                <path d="M99.7928932,0.5 L119.292893,20 L99.7928932,39.5 L1.20710678,39.5 L20.7071068,20 L1.20710678,0.5 L99.7928932,0.5 Z" id="矩形"></path>
+            </g>
+        </g>
+    </g>
+</svg>
