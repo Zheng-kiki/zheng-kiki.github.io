@@ -1,1 +1,0 @@
-function r(n,d={id:"id",pId:"pid"}){return(n[d.pId]||!1)===!1}const a=(n,d={id:"id",pId:"pid"},p=r)=>{const s=[],i=n.reduce((e,t)=>(e.set(t[d.id],{...t}),e),new Map);for(const[,e]of i){const t=i.get(e[d.pId]);p(e,d)||!t?s.push(e):(t.children=t.children||[],t.children.push(e))}return s};export{a as t};

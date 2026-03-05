@@ -1,1 +1,0 @@
-import{_ as t,o as s,h as c,j as _}from"./index-5cccf7e4.js";const o={},n={class:"myStyle"};function r(e,a){return s(),c("div",n,[_(e.$slots,"default",{},void 0,!0)])}const l=t(o,[["render",r],["__scopeId","data-v-e90accfa"],["__file","/Users/k/Documents/公司/浙江省土地储备管理系统/zjstdcb/src/views/leader/component/thridTitle.vue"]]);export{l as default};

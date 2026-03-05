@@ -1,1 +1,0 @@
-import{a,d as r,n as i}from"./geometryEngineBase-b54da11d.js";import"./index-5cccf7e4.js";const d=l=>{let e=class extends l{get availableFields(){return this.layer.fieldsIndex.fields.map(t=>t.name)}};return a([r()],e.prototype,"layer",void 0),a([r({readOnly:!0})],e.prototype,"availableFields",null),e=a([i("esri.views.layers.OGCFeatureLayerView")],e),e};export{d as o};

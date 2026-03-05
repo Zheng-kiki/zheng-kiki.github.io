@@ -1,1 +1,0 @@
-import{_ as r}from"./index-5cccf7e4.js";const c={setup(){return()=>null},created(){const{params:e,query:t}=this.$route,{path:s}=e;this.$router.replace({path:`/${s}`,query:t})}},a=r(c,[["__file","/Users/k/Documents/公司/浙江省土地储备管理系统/zjstdcb/src/views/redirect/index.vue"]]);export{a as default};
