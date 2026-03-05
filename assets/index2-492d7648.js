@@ -1,0 +1,1 @@
+import{r as _}from"./index-5cccf7e4.js";const E={AREA_UNIT_HECTARE:1,AREA_UNIT_MU:15,AREA_UNIT_TEN_THOUSAND_MU:.0015};_({AREA_UNIT_HECTARE:"公顷",AREA_UNIT_MU:"亩",AREA_UNIT_TEN_THOUSAND_MU:"万亩"});const T=_("AREA_UNIT_HECTARE"),e=A=>A?Number((Number(A)*E[T.value]).toFixed(4)):0,N=A=>{T.value=A};export{e as a,N as c};

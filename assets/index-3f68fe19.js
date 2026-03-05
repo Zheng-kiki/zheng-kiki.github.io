@@ -1,1 +1,0 @@
-import t from"./index-4f549221.js";import{d as o,o as r,f as e}from"./index-2308c9a5.js";import"./index-00e6bc40.js";import"./index-62153bb8.js";import"./index-5fd54c75.js";import"./index-bc2bb0be.js";import"./index-2f0fb70f.js";const u=o({__name:"index",setup(p){return(i,m)=>(r(),e(t,{type:"edit"}))}});export{u as default};

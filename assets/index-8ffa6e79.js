@@ -1,0 +1,1 @@
+import{r as a}from"./index-5cccf7e4.js";const n={hectare:1,tenThousandMu:.0015},u=a({hectare:"公顷",tenThousandMu:"万亩"}),e=a("hectare"),o=t=>e.value==="tenThousandMu"?Number((Number(t)*n[e.value]).toFixed(4)):Number((Number(t)*n[e.value]).toFixed(2)),s=t=>{e.value=t},c=()=>u.value[e.value];export{s as a,o as c,c as g};

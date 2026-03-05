@@ -1,0 +1,1 @@
+import{_ as s,o as t,h as o,j as c}from"./index-5cccf7e4.js";const n={},_={class:"myStyle"};function d(e,r){return t(),o("div",_,[c(e.$slots,"default",{},void 0,!0)])}const a=s(n,[["render",d],["__scopeId","data-v-791d771f"],["__file","/Users/k/Documents/公司/浙江省土地储备管理系统/zjstdcb/src/views/leader/component/secondTitle.vue"]]);export{a as default};

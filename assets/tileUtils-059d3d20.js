@@ -1,1 +1,0 @@
-import"./geometryEngineBase-bcb7f260.js";import"./index-2308c9a5.js";import"./index-ff6046e0.js";function d(c,t,e,i){const o=c.clone(),l=1<<o.level,r=o.col+t,n=o.row+e;return i&&r<0?(o.col=r+l,o.world-=1):r>=l?(o.col=r-l,o.world+=1):o.col=r,o.row=n,o}export{d as l};

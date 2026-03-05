@@ -1,1 +1,0 @@
-import{A as r}from"./index-2308c9a5.js";const o=t=>r({url:"/http/org/tree",params:t}),u=t=>r({url:"/http/org/increase",method:"post",data:t},{msg:!0}),g=(t,e)=>r({url:`/http/org/${t}`,method:"put",data:e},{msg:!0}),n=t=>r({url:`/http/org/${t}`,method:"delete"});export{n as d,o as g,u as i,g as u};

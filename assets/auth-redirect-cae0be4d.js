@@ -1,0 +1,1 @@
+import{_ as t}from"./index-5cccf7e4.js";const o={name:"AuthRedirect",created(){const e=window.location.search.slice(1);window.localStorage&&(window.localStorage.setItem("x-admin-oauth-code",e),window.close())},render:function(e){return e()}},r=t(o,[["__file","/Users/k/Documents/公司/浙江省土地储备管理系统/zjstdcb/src/views/login/auth-redirect.vue"]]);export{r as default};

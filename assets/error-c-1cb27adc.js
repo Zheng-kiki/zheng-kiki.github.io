@@ -1,0 +1,1 @@
+import{_ as e,o as r,h as s}from"./index-5cccf7e4.js";const c={},_={class:"fullscreen error-c","sk-flex":"row-center2"};function o(t,n){return r(),s("div",_," 该模块还在开发中。 ")}const f=e(c,[["render",o],["__scopeId","data-v-f3283816"],["__file","/Users/k/Documents/公司/浙江省土地储备管理系统/zjstdcb/src/views/error-page/error-c.vue"]]);export{f as default};

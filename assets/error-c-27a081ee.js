@@ -1,1 +1,0 @@
-import{_ as e,o as r,a as _}from"./index-2308c9a5.js";const c={},o={class:"fullscreen error-c","sk-flex":"row-center2"};function s(t,n){return r(),_("div",o," 该模块还在开发中。 ")}const d=e(c,[["render",s],["__scopeId","data-v-a0d4ee02"]]);export{d as default};
