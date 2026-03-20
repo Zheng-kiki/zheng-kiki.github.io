@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流程图编辑器 - 纯JS实现</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f0f2f5;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            background: white;
+            padding: 12px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+            z-index: 10;
+            position: relative;
+        }
+
+        .toolbar button {
+            padding: 8px 16px;
+            background: #5F95FF;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .toolbar button:hover {
+            background: #3b82f6;
+            transform: translateY(-1px);
+        }
+
+        .toolbar button.danger {
+            background: #f56c6c;
+        }
+
+        .toolbar button.danger:hover {
+            background: #e85d5d;
+        }
+
+        .toolbar .info {
+            margin-left: auto;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 60px);
+            overflow: auto;
+            background: #fafafa;
+            cursor: default;
+        }
+
+        #canvas {
+            position: relative;
+            min-width: 2000px;
+            min-height: 2000px;
+            background-image: 
+                linear-gradient(to right, #e5e7eb 1px, transparent 1px),
+                linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .node {
+            position: absolute;
+            min-width: 160px;
+            min-height: 70px;
+            background: linear-gradient(135deg, #EFF4FF 0%, #E8F0FE 100%);
+            border: 2px solid #5F95FF;
+            border-radius: 12px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #1e3a8a;
+        }
+
+        .node:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(95,149,255,0.3);
+            border-color: #3b82f6;
+        }
+
+        .node.selected {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245,158,11,0.2);
+        }
+
+        .edge {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .edge-line {
+            stroke: #A0A0A0;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .edge-arrow {
+            fill: #A0A0A0;
+        }
+
+        .context-menu {
+            position: fixed;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            min-width: 180px;
+            z-index: 1000;
+            animation: menuFadeIn 0.15s ease;
+        }
+
+        .context-menu-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+            transition: background 0.2s;
+        }
+
+        .context-menu-item:hover {
+            background: #f0f0f0;
+        }
+
+        .context-menu-item.danger {
+            color: #f56c6c;
+        }
+
+        .context-menu-divider {
+            height: 1px;
+            background: #e8e8e8;
+            margin: 8px 0;
+        }
+
+        @keyframes menuFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 450px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal input, .modal textarea, .modal select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .modal textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-buttons button {
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .modal-buttons .confirm {
+            background: #5F95FF;
+            color: white;
+            border: none;
+        }
+
+        .modal-buttons .cancel {
+            background: white;
+            border: 1px solid #ddd;
+            color: #666;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 3000;
+            animation: toastFadeInOut 2s ease;
+            white-space: nowrap;
+        }
+
+        @keyframes toastFadeInOut {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+        }
+
+        .connection-line {
+            position: absolute;
+            border: 2px dashed #5F95FF;
+            pointer-events: none;
+            z-index: 100;
+            background: rgba(95,149,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <button id="exportBtn">📸 导出图片</button>
+        <button id="resetBtn">🔄 重置视图</button>
+        <button id="clearEdgesBtn" class="danger">🗑️ 清除所有连线</button>
+        <div class="info">
+            💡 提示：左击节点查看详情 | 右击节点编辑/删除/添加关联 | 右键空白处新增节点
+        </div>
+    </div>
+    <div class="canvas-container" id="canvasContainer">
+        <div id="canvas"></div>
+    </div>
+
+    <script>
+        // 节点数据
+        let nodes = [
+            { id: 'start', label: '开始\n矢量纳入数据库、制作国空间部图、出具区政府承诺函', x: 400, y: 50, type: 'start', days: 3, weight: 1 },
+            { id: 'plan_condition', label: '规划条件', x: 400, y: 150, type: 'normal' },
+            { id: 'site_selection', label: '选址意见容缺提前审核材料', x: 400, y: 250, type: 'normal' },
+            { id: 'scheme_review', label: '方案评审', x: 400, y: 350, type: 'normal' },
+            { id: 'environmental', label: '环评', x: 400, y: 450, type: 'normal' },
+            { id: 'design_deepening', label: '方案和施工图深化', x: 400, y: 550, type: 'normal' },
+            { id: 'permit_issue', label: '核发用地预审和选址意见书、规划条件', x: 400, y: 650, type: 'normal' },
+            { id: 'city_supervision', label: '市监管系统录入', x: 400, y: 750, type: 'normal' },
+            { id: 'province_approval', label: '省厅审核同意', x: 400, y: 850, type: 'normal' },
+            { id: 'license_issue', label: '发证', x: 400, y: 950, type: 'normal' },
+        ];
+
+        let edges = [
+            { source: 'start', target: 'plan_condition' },
+            { source: 'plan_condition', target: 'site_selection' },
+            { source: 'site_selection', target: 'scheme_review' },
+            { source: 'scheme_review', target: 'environmental' },
+            { source: 'environmental', target: 'design_deepening' },
+            { source: 'design_deepening', target: 'permit_issue' },
+            { source: 'permit_issue', target: 'city_supervision' },
+            { source: 'city_supervision', target: 'province_approval' },
+            { source: 'province_approval', target: 'license_issue' },
+        ];
+
+        let nextId = nodes.length + 1;
+        let currentMenu = null;
+        let selectedNode = null;
+        let isDragging = false;
+        let dragTarget = null;
+        let dragStartX = 0, dragStartY = 0;
+        let canvas = document.getElementById('canvas');
+        let container = document.getElementById('canvasContainer');
+        let currentOffsetX = 0, currentOffsetY = 0;
+
+        // 渲染所有节点和连线
+        function render() {
+            renderNodes();
+            renderEdges();
+        }
+
+        function renderNodes() {
+            canvas.innerHTML = '';
+            nodes.forEach(node => {
+                const nodeDiv = document.createElement('div');
+                nodeDiv.className = 'node';
+                if (selectedNode === node.id) {
+                    nodeDiv.classList.add('selected');
+                }
+                nodeDiv.id = `node-${node.id}`;
+                nodeDiv.style.left = node.x + 'px';
+                nodeDiv.style.top = node.y + 'px';
+                nodeDiv.innerHTML = node.label.replace(/\n/g, '<br>');
+                
+                // 绑定事件
+                nodeDiv.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showNodeDetail(node);
+                });
+                
+                nodeDiv.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    showNodeMenu(node, e.clientX, e.clientY);
+                });
+                
+                nodeDiv.addEventListener('mousedown', (e) => {
+                    if (e.button === 0) { // 左键拖拽
+                        e.stopPropagation();
+                        isDragging = true;
+                        dragTarget = node;
+                        dragStartX = e.clientX - node.x;
+                        dragStartY = e.clientY - node.y;
+                        nodeDiv.style.cursor = 'grabbing';
+                    }
+                });
+                
+                canvas.appendChild(nodeDiv);
+            });
+        }
+
+        function renderEdges() {
+            // 移除旧的连线
+            document.querySelectorAll('.edge-svg').forEach(el => el.remove());
+            
+            edges.forEach(edge => {
+                const sourceNode = nodes.find(n => n.id === edge.source);
+                const targetNode = nodes.find(n => n.id === edge.target);
+                if (sourceNode && targetNode) {
+                    drawEdge(sourceNode, targetNode);
+                }
+            });
+        }
+
+        function drawEdge(source, target) {
+            const startX = source.x + 90; // 节点宽度一半
+            const startY = source.y + 35; // 节点高度一半
+            const endX = target.x + 90;
+            const endY = target.y + 35;
+            
+            // 计算更好的连接点（从底部到顶部）
+            const fromX = source.x + 90;
+            const fromY = source.y + 70;
+            const toX = target.x + 90;
+            const toY = target.y;
+            
+            // 创建SVG
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.classList.add('edge-svg');
+            svg.style.position = 'absolute';
+            svg.style.top = '0';
+            svg.style.left = '0';
+            svg.style.width = '100%';
+            svg.style.height = '100%';
+            svg.style.pointerEvents = 'none';
+            svg.style.zIndex = '5';
+            
+            // 计算贝塞尔曲线控制点
+            const midY = (fromY + toY) / 2;
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const d = `M ${fromX} ${fromY} C ${fromX} ${midY}, ${toX} ${midY}, ${toX} ${toY}`;
+            path.setAttribute('d', d);
+            path.setAttribute('stroke', '#A0A0A0');
+            path.setAttribute('stroke-width', '2');
+            path.setAttribute('fill', 'none');
+            
+            // 添加箭头
+            const angle = Math.atan2(toY - midY, toX - fromX);
+            const arrowX = toX - 8 * Math.cos(angle);
+            const arrowY = toY - 8 * Math.sin(angle);
+            const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const arrowPoints = [
+                [arrowX, arrowY],
+                [arrowX - 8, arrowY - 4],
+                [arrowX - 8, arrowY + 4]
+            ];
+            arrow.setAttribute('points', arrowPoints.map(p => p.join(',')).join(' '));
+            arrow.setAttribute('fill', '#A0A0A0');
+            
+            svg.appendChild(path);
+            svg.appendChild(arrow);
+            canvas.appendChild(svg);
+        }
+
+        function updateNodePosition(nodeId, x, y) {
+            const node = nodes.find(n => n.id === nodeId);
+            if (node) {
+                node.x = x;
+                node.y = y;
+                render();
+            }
+        }
+
+        // 拖拽处理
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging && dragTarget) {
+                const newX = e.clientX - dragStartX;
+                const newY = e.clientY - dragStartY;
+                updateNodePosition(dragTarget.id, newX, newY);
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                dragTarget = null;
+                document.querySelectorAll('.node').forEach(node => {
+                    node.style.cursor = 'pointer';
+                });
+            }
+        });
+
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            toast.style.background = isError ? '#f56c6c' : '#333';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        function showNodeDetail(node) {
+            const incomingEdges = edges.filter(e => e.target === node.id);
+            const outgoingEdges = edges.filter(e => e.source === node.id);
+            const incomingNodes = incomingEdges.map(e => nodes.find(n => n.id === e.source)).filter(n => n);
+            const outgoingNodes = outgoingEdges.map(e => nodes.find(n => n.id === e.target)).filter(n => n);
+
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal">
+                    <h3>📋 节点详情</h3>
+                    <div style="margin-bottom: 16px; max-height: 400px; overflow-y: auto;">
+                        <p><strong>节点名称：</strong></p>
+                        <p style="white-space: pre-wrap;">${node.label}</p>
+                        ${node.days ? `<p><strong>⏱️ 耗时：</strong> ${node.days} 天</p>` : ''}
+                        ${node.weight ? `<p><strong>⚖️ 权重：</strong> ${node.weight}</p>` : ''}
+                        <hr style="margin: 12px 0;">
+                        <p><strong>⬅️ 前置节点：</strong></p>
+                        ${incomingNodes.length > 0 ? incomingNodes.map(n => `<p style="margin-left: 20px;">• ${n.label.split('\n')[0]}</p>`).join('') : '<p style="margin-left: 20px; color: #999;">无</p>'}
+                        <p style="margin-top: 12px;"><strong>➡️ 后置节点：</strong></p>
+                        ${outgoingNodes.length > 0 ? outgoingNodes.map(n => `<p style="margin-left: 20px;">• ${n.label.split('\n')[0]}</p>`).join('') : '<p style="margin-left: 20px; color: #999;">无</p>'}
+                    </div>
+                    <div class="modal-buttons">
+                        <button class="confirm">关闭</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.querySelector('.confirm').onclick = () => modal.remove();
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        function editNode(node, callback) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal">
+                    <h3>✏️ 编辑节点</h3>
+                    <label>节点名称：</label>
+                    <textarea id="nodeLabel" rows="3" placeholder="请输入节点名称">${node.label}</textarea>
+                    <div class="modal-buttons">
+                        <button class="confirm">保存</button>
+                        <button class="cancel">取消</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            const textarea = modal.querySelector('#nodeLabel');
+            modal.querySelector('.confirm').onclick = () => {
+                const newLabel = textarea.value.trim();
+                if (newLabel) {
+                    callback(newLabel);
+                    modal.remove();
+                    showToast('节点已更新');
+                } else {
+                    showToast('节点名称不能为空', true);
+                }
+            };
+            modal.querySelector('.cancel').onclick = () => modal.remove();
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
+
+        function createAssociation(sourceNode, targetNode) {
+            const exists = edges.some(e => e.source === sourceNode.id && e.target === targetNode.id);
+            if (exists) {
+                showToast('该关联已存在', true);
+                return false;
+            }
+            if (sourceNode.id === targetNode.id) {
+                showToast('不能关联到自身', true);
+                return false;
+            }
+            edges.push({ source: sourceNode.id, target: targetNode.id });
+            render();
+            showToast(`✅ 已创建关联：${sourceNode.label.split('\n')[0]} → ${targetNode.label.split('\n')[0]}`);
+            return true;
+        }
+
+        function deleteAssociation(sourceId, targetId) {
+            edges = edges.filter(e => !(e.source === sourceId && e.target === targetId));
+            render();
+            showToast('🗑️ 已删除关联');
+        }
+
+        function getAvailableTargetNodes(sourceNode) {
+            const alreadyLinked = edges.filter(e => e.source === sourceNode.id).map(e => e.target);
+            return nodes.filter(n => n.id !== sourceNode.id && !alreadyLinked.includes(n.id));
+        }
+
+        function hideMenu() {
+            if (currentMenu) {
+                currentMenu.remove();
+                currentMenu = null;
+            }
+        }
+
+        function showNodeMenu(node, x, y) {
+            hideMenu();
+            const availableNodes = getAvailableTargetNodes(node);
+            const outgoingEdges = edges.filter(e => e.source === node.id);
+            
+            const menu = document.createElement('div');
+            menu.className = 'context-menu';
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+            
+            let html = `
+                <div class="context-menu-item" data-action="edit">✏️ 编辑节点</div>
+                <div class="context-menu-item" data-action="add-association">🔗 添加关联</div>
+            `;
+            
+            if (outgoingEdges.length > 0) {
+                html += `<div class="context-menu-item" data-action="delete-association">🗑️ 删除关联</div>`;
+            }
+            
+            html += `<div class="context-menu-divider"></div>`;
+            html += `<div class="context-menu-item danger" data-action="delete">🗑️ 删除节点</div>`;
+            html += `<div class="context-menu-divider"></div>`;
+            html += `<div class="context-menu-item" data-action="cancel">❌ 取消</div>`;
+            
+            menu.innerHTML = html;
+            document.body.appendChild(menu);
+            currentMenu = menu;
+            
+            // 编辑节点
+            menu.querySelector('[data-action="edit"]')?.addEventListener('click', () => {
+                hideMenu();
+                editNode(node, (newLabel) => {
+                    const index = nodes.findIndex(n => n.id === node.id);
+                    if (index !== -1) {
+                        nodes[index].label = newLabel;
+                        render();
+                    }
+                });
+            });
+            
+            // 添加关联
+            menu.querySelector('[data-action="add-association"]')?.addEventListener('click', () => {
+                hideMenu();
+                if (availableNodes.length === 0) {
+                    showToast('没有可关联的节点', true);
+                    return;
+                }
+                // 创建选择节点的子菜单
+                const subMenu = document.createElement('div');
+                subMenu.className = 'context-menu';
+                subMenu.style.left = (x + 180) + 'px';
+                subMenu.style.top = y + 'px';
+                let subHtml = '';
+                availableNodes.forEach(target => {
+                    subHtml += `<div class="context-menu-item" data-target="${target.id}">→ ${target.label.split('\n')[0].substring(0, 30)}</div>`;
+                });
+                subHtml += `<div class="context-menu-divider"></div>`;
+                subHtml += `<div class="context-menu-item" data-action="cancel">取消</div>`;
+                subMenu.innerHTML = subHtml;
+                document.body.appendChild(subMenu);
+                
+                subMenu.querySelectorAll('[data-target]').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const targetId = el.getAttribute('data-target');
+                        const targetNode = nodes.find(n => n.id === targetId);
+                        if (targetNode) {
+                            createAssociation(node, targetNode);
+                        }
+                        subMenu.remove();
+                    });
+                });
+                subMenu.querySelector('[data-action="cancel"]')?.addEventListener('click', () => subMenu.remove());
+                
+                setTimeout(() => {
+                    document.addEventListener('click', () => subMenu.remove(), { once: true });
+                }, 0);
+            });
+            
+            // 删除关联
+            menu.querySelector('[data-action="delete-association"]')?.addEventListener('click', () => {
+                hideMenu();
+                if (outgoingEdges.length === 0) {
+                    showToast('没有可删除的关联', true);
+                    return;
+                }
+                const subMenu = document.createElement('div');
+                subMenu.className = 'context-menu';
+                subMenu.style.left = (x + 180) + 'px';
+                subMenu.style.top = y + 'px';
+                let subHtml = '';
+                outgoingEdges.forEach(edge => {
+                    const targetNode = nodes.find(n => n.id === edge.target);
+                    if (targetNode) {
+                        subHtml += `<div class="context-menu-item" data-source="${edge.source}" data-target="${edge.target}">删除 → ${targetNode.label.split('\n')[0].substring(0, 30)}</div>`;
+                    }
+                });
+                subHtml += `<div class="context-menu-divider"></div>`;
+                subHtml += `<div class="context-menu-item" data-action="cancel">取消</div>`;
+                subMenu.innerHTML = subHtml;
+                document.body.appendChild(subMenu);
+                
+                subMenu.querySelectorAll('[data-source][data-target]').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const sourceId = el.getAttribute('data-source');
+                        const targetId = el.getAttribute('data-target');
+                        deleteAssociation(sourceId, targetId);
+                        subMenu.remove();
+                    });
+                });
+                subMenu.querySelector('[data-action="cancel"]')?.addEventListener('click', () => subMenu.remove());
+                
+                setTimeout(() => {
+                    document.addEventListener('click', () => subMenu.remove(), { once: true });
+                }, 0);
+            });
+            
+            // 删除节点
+            menu.querySelector('[data-action="delete"]')?.addEventListener('click', () => {
+                hideMenu();
+                if (confirm(`确定要删除节点 "${node.label.split('\n')[0]}" 及其所有关联吗？`)) {
+                    edges = edges.filter(e => e.source !== node.id && e.target !== node.id);
+                    nodes = nodes.filter(n => n.id !== node.id);
+                    render();
+                    showToast('节点已删除');
+                }
+            });
+            
+            // 取消
+            menu.querySelector('[data-action="cancel"]')?.addEventListener('click', () => hideMenu());
+            
+            setTimeout(() => {
+                document.addEventListener('click', hideMenu);
+                document.addEventListener('contextmenu', hideMenu);
+            }, 0);
+        }
+        
+        function showCanvasMenu(x, y) {
+            hideMenu();
+            const menu = document.createElement('div');
+            menu.className = 'context-menu';
+            menu.style.left = x + 'px';
+            menu.style.top = y + 'px';
+            menu.innerHTML = `
+                <div class="context-menu-item" data-action="add">➕ 新增节点</div>
+                <div class="context-menu-divider"></div>
+                <div class="context-menu-item" data-action="cancel">❌ 取消</div>
+            `;
+            document.body.appendChild(menu);
+            currentMenu = menu;
+            
+            menu.querySelector('[data-action="add"]')?.addEventListener('click', () => {
+                hideMenu();
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal">
+                        <h3>➕ 新增节点</h3>
+                        <label>节点名称：</label>
+                        <textarea id="nodeLabel" rows="3" placeholder="请输入节点名称"></textarea>
+                        <div class="modal-buttons">
+                            <button class="confirm">创建</button>
+                            <button class="cancel">取消</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                const textarea = modal.querySelector('#nodeLabel');
+                modal.querySelector('.confirm').onclick = () => {
+                    const label = textarea.value.trim();
+                    if (label) {
+                        const newNodeId = `node_${Date.now()}_${nextId++}`;
+                        const containerRect = container.getBoundingClientRect();
+                        const canvasRect = canvas.getBoundingClientRect();
+                        const relativeX = x - canvasRect.left + container.scrollLeft;
+                        const relativeY = y - canvasRect.top + container.scrollTop;
+                        nodes.push({ 
+                            id: newNodeId, 
+                            label: label, 
+                            x: relativeX - 90, 
+                            y: relativeY - 35,
+                            type: 'normal' 
+                        });
+                        render();
+                        modal.remove();
+                        showToast('✅ 节点已添加');
+                    } else {
+                        showToast('节点名称不能为空', true);
+                    }
+                };
+                modal.querySelector('.cancel').onclick = () => modal.remove();
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
+            });
+            
+            menu.querySelector('[data-action="cancel"]')?.addEventListener('click', () => hideMenu());
+            
+            setTimeout(() => {
+                document.addEventListener('click', hideMenu);
+                document.addEventListener('contextmenu', hideMenu);
+            }, 0);
+        }
+        
+        // 画布右键菜单
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            if (e.target === canvas || e.target.classList.contains('canvas-container')) {
+                showCanvasMenu(e.clientX, e.clientY);
+            }
+        });
+        
+        // 导出图片
+        document.getElementById('exportBtn').onclick = () => {
+            html2canvas(canvas).then(canvasImg => {
+                const link = document.createElement('a');
+                link.download = 'flowchart.png';
+                link.href = canvasImg.toDataURL();
+                link.click();
+            }).catch(() => {
+                showToast('截图失败，请手动截图', true);
+            });
+        };
+        
+        // 重置视图
+        document.getElementById('resetBtn').onclick = () => {
+            container.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+            showToast('🔄 视图已重置');
+        };
+        
+        // 清除所有连线
+        document.getElementById('clearEdgesBtn').onclick = () => {
+            if (confirm('确定要清除所有连线吗？此操作不可撤销。')) {
+                edges = [];
+                render();
+                showToast('🗑️ 已清除所有连线');
+            }
+        };
+        
+        // 引入html2canvas用于截图
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+        document.head.appendChild(script);
+        
+        // 初始化
+        render();
+    </script>
+</body>
+</html>
