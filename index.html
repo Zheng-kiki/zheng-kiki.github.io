@@ -1,178 +1,671 @@
-<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>交易日志</title><meta name="author" content="zheng K"><meta name="copyright" content="zheng K"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="人生就是一场交易">
-<meta property="og:type" content="website">
-<meta property="og:title" content="交易日志">
-<meta property="og:url" content="https://github.com/Zheng-kiki/zheng-kiki.github.io/index.html">
-<meta property="og:site_name" content="交易日志">
-<meta property="og:description" content="人生就是一场交易">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://github.com/Zheng-kiki/zheng-kiki.github.io/img/butterfly-icon.png">
-<meta property="article:author" content="zheng K">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://github.com/Zheng-kiki/zheng-kiki.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "交易日志",
-  "alternateName": [
-    "github.com"
-  ],
-  "url": "https://github.com/Zheng-kiki/zheng-kiki.github.io/"
-}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://github.com/Zheng-kiki/zheng-kiki.github.io/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
-    (() => {
-      
-    const saveToLocal = {
-      set: (key, value, ttl) => {
-        if (!ttl) return
-        const expiry = Date.now() + ttl * 86400000
-        localStorage.setItem(key, JSON.stringify({ value, expiry }))
-      },
-      get: key => {
-        const itemStr = localStorage.getItem(key)
-        if (!itemStr) return undefined
-        const { value, expiry } = JSON.parse(itemStr)
-        if (Date.now() > expiry) {
-          localStorage.removeItem(key)
-          return undefined
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>号码灵探 · 归属匹配助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-        return value
-      }
-    }
 
-    window.btf = {
-      saveToLocal,
-      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
-        const script = document.createElement('script')
-        script.src = url
-        script.async = true
-        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
-        script.onload = script.onreadystatechange = () => {
-          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        body {
+            background: linear-gradient(145deg, #e0eafc 0%, #cfdef3 100%);
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
-        script.onerror = reject
-        document.head.appendChild(script)
-      }),
-      getCSS: (url, id) => new Promise((resolve, reject) => {
-        const link = document.createElement('link')
-        link.rel = 'stylesheet'
-        link.href = url
-        if (id) link.id = id
-        link.onload = link.onreadystatechange = () => {
-          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
-        }
-        link.onerror = reject
-        document.head.appendChild(link)
-      }),
-      addGlobalFn: (key, fn, name = false, parent = window) => {
-        if (!false && key.startsWith('pjax')) return
-        const globalFn = parent.globalFn || {}
-        globalFn[key] = globalFn[key] || {}
-        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
-        parent.globalFn = globalFn
-      }
-    }
-  
-      
-      const activateDarkMode = () => {
-        document.documentElement.setAttribute('data-theme', 'dark')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
-        }
-      }
-      const activateLightMode = () => {
-        document.documentElement.setAttribute('data-theme', 'light')
-        if (document.querySelector('meta[name="theme-color"]') !== null) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
-        }
-      }
 
-      btf.activateDarkMode = activateDarkMode
-      btf.activateLightMode = activateLightMode
+        /* 主卡片 */
+        .card {
+            max-width: 560px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(0px);
+            border-radius: 48px;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
 
-      const theme = saveToLocal.get('theme')
-    
-          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
-        
-      
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
-      }
-    
-      
-    const detectApple = () => {
-      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
-        document.documentElement.classList.add('apple')
-      }
-    }
-    detectApple()
-  
-    })()
-  </script><script>const GLOBAL_CONFIG = {
-  root: '/',
-  algolia: undefined,
-  localSearch: undefined,
-  translate: undefined,
-  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
-  copy: {
-    success: 'Copy Successful',
-    error: 'Copy Failed',
-    noSupport: 'Browser Not Supported'
-  },
-  relativeDate: {
-    homepage: false,
-    post: false
-  },
-  runtime: '',
-  dateSuffix: {
-    just: 'Just now',
-    min: 'minutes ago',
-    hour: 'hours ago',
-    day: 'days ago',
-    month: 'months ago'
-  },
-  copyright: undefined,
-  lightbox: 'null',
-  Snackbar: undefined,
-  infinitegrid: {
-    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
-    buttonText: 'Load More'
-  },
-  isPhotoFigcaption: false,
-  islazyloadPlugin: false,
-  isAnchor: false,
-  percent: {
-    toc: true,
-    rightside: false,
-  },
-  autoDarkmode: false
-}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: '交易日志',
-  isHighlightShrink: false,
-  isToc: false,
-  pageType: 'home'
-}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">交易日志</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="site-info"><h1 id="site-title">交易日志</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="post_cover left"><a href="/2026/03/14/hello-world/" title="我的第一篇Butterfly博客"><img class="post-bg" src="/img/cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="我的第一篇Butterfly博客"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/03/14/hello-world/" title="我的第一篇Butterfly博客"><i class="fas fa-thumbtack sticky"></i>我的第一篇Butterfly博客</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">Created</span><time datetime="2026-03-14T02:00:00.000Z" title="Created 2026-03-14 10:00:00">2026-03-14</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/">博客搭建</a></span></div><div class="content">一级标题（文章大标题）这是我的第一篇 Butterfly 主题博客，以下是适配主题的常用编辑格式： 二级标题 列表项 1：Butterfly 支持所有标准 Markdown 语法 列表项 2：可直接嵌入图片&#x2F;代码&#x2F;表格  1. 插入图片（Butterfly 自动适配响应式）  # 图片放在 source&#x2F;img&#x2F; 目录下  注：Butterfly 会自动给图片加阴影和点击放大效果，无需额外配置  2. 插入代码块（Butterfly 自带高亮）# Butterfly 主题默认支持 PrismJS 代码高亮 hexo clean &amp;&amp; hexo s  </div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">zheng K</div><div class="author-info-description">人生就是一场交易</div><div class="site-data"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">1</div></a></div><a id="card-info-btn" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Posts</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/03/14/hello-world/" title="我的第一篇Butterfly博客"><img src="/img/cover.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="我的第一篇Butterfly博客"/></a><div class="content"><a class="title" href="/2026/03/14/hello-world/" title="我的第一篇Butterfly博客">我的第一篇Butterfly博客</a><time datetime="2026-03-14T02:00:00.000Z" title="Created 2026-03-14 10:00:00">2026-03-14</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
-            <i class="fas fa-folder-open"></i>
-            <span>Categories</span>
-            
-          </div>
-          <ul class="card-category-list" id="aside-cat-list">
-            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA/"><span class="card-category-list-name">博客搭建</span><span class="card-category-list-count">1</span></a></li>
-          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>Tags</span></div><div class="card-tag-cloud"><a href="/tags/Butterfly/" style="font-size: 1.1em; color: #999">Butterfly</a> <a href="/tags/%E6%95%99%E7%A8%8B/" style="font-size: 1.1em; color: #999">教程</a> <a href="/tags/Hexo/" style="font-size: 1.1em; color: #999">Hexo</a></div></div><div class="card-widget card-archives">
-    <div class="item-headline">
-      <i class="fas fa-archive"></i>
-      <span>Archives</span>
-      
+        /* 头部装饰 */
+        .hero {
+            background: #1a2a3f;
+            padding: 28px 24px 24px;
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .hero h1 span {
+            background: #ffd966;
+            font-size: 1.6rem;
+            display: inline-block;
+            padding: 0 8px;
+            border-radius: 60px;
+            color: #1e2f3f;
+        }
+
+        .hero p {
+            opacity: 0.8;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        /* 表单区域 */
+        .form-container {
+            padding: 28px 24px 20px;
+        }
+
+        .input-group {
+            margin-bottom: 22px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #2c3e4e;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-group label i {
+            font-style: normal;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .input-field {
+            background: #f2f5f9;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 28px;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #0f172a;
+            transition: all 0.2s;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .input-field:focus {
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .phone-preview {
+            background: #eef2ff;
+            border-radius: 40px;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .preview-item {
+            flex: 1;
+            background: white;
+            border-radius: 60px;
+            padding: 8px 16px;
+            text-align: center;
+            font-family: monospace;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #0c4e6e;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .preview-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #4b5563;
+            margin-right: 6px;
+        }
+
+        .full-number-demo {
+            background: #e9ecef;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+
+        /* 按钮 */
+        .match-btn {
+            background: #0f2b3d;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 44px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 20px 0 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .match-btn:active {
+            transform: scale(0.97);
+            background: #1e3a4d;
+        }
+
+        /* 结果区域 */
+        .result-area {
+            background: #f8fafc;
+            border-radius: 32px;
+            padding: 20px;
+            margin-top: 12px;
+            border: 1px solid #eef2ff;
+            transition: all 0.25s;
+        }
+
+        .result-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            border-left: 4px solid #3b82f6;
+            padding-left: 12px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+        }
+
+        .match-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 10px 0;
+            border-bottom: 1px solid #eef2ff;
+        }
+
+        .match-item:last-child {
+            border-bottom: none;
+        }
+
+        .match-label {
+            font-weight: 500;
+            color: #475569;
+            font-size: 0.85rem;
+        }
+
+        .match-value {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 1rem;
+            word-break: break-all;
+            text-align: right;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #15803d;
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-radius: 20px;
+            padding: 14px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 20px 24px 24px;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+            background: #ffffffcc;
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.5rem; }
+            .preview-item { font-size: 0.9rem; padding: 6px 12px; }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="hero">
+        <!-- <h1>
+            📞 号码·灵探
+            <span>AI匹配</span>
+        </h1> -->
+        <p>输入姓名 · 归属地 · 前3后4 → 智能匹配完整号码</p>
     </div>
-  
-    <ul class="card-archive-list">
-      
-        <li class="card-archive-list-item">
-          <a class="card-archive-list-link" href="/archives/2026/03/">
-            <span class="card-archive-list-date">
-              March 2026
-            </span>
-            <span class="card-archive-list-count">1</span>
-          </a>
-        </li>
-      
-    </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>Website Info</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">Article Count :</div><div class="item-count">1</div></div><div class="webinfo-item"><div class="item-name">Unique Visitors :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Page Views :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">Last Update :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-13T09:51:03.616Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By zheng K</span><span class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>Theme </span><a href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="Toggle Between Light and Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle Between Single-column and Double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="Settings"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="Back to Top"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+
+    <div class="form-container">
+        <div class="input-group">
+            <label><i>👤</i> 姓名</label>
+            <input type="text" id="userName" class="input-field" placeholder="例: 张明轩" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label><i>📍</i> 号码归属地 (省市/城市)</label>
+            <input type="text" id="region" class="input-field" placeholder="例: 北京 / 上海 / 广东深圳" autocomplete="off">
+        </div>
+
+        <div class="input-group">
+            <label>  已知前三位 + 后四位</label>
+            <div class="phone-preview">
+                <div class="preview-item">
+                    <span class="preview-label">前三位</span>
+                    <input type="text" id="prefix3" maxlength="3" inputmode="numeric" placeholder="138" style="width: 70px; background: transparent; border: none; font-weight: 700; font-family: monospace; font-size: 1rem; outline: none; text-align: center;">
+                </div>
+                <span style="font-weight: 800; color:#3b82f6;">****</span>
+                <div class="preview-item">
+                    <span class="preview-label">后四位</span>
+                    <input type="text" id="suffix4" maxlength="4" inputmode="numeric" placeholder="1234" style="width: 80px; background: transparent; border: none; font-weight: 700; font-family: monospace; font-size: 1rem; outline: none; text-align: center;">
+                </div>
+            </div>
+            <div style="font-size: 0.7rem; margin-top: 8px; color: #4b5563; text-align: center;">
+                💡 预览: <span id="livePreview" class="full-number-demo">138****1234</span>
+            </div>
+        </div>
+
+        <button id="matchBtn" class="match-btn">
+            🔍 开始匹配号码
+        </button>
+
+        <!-- 动态结果面板 -->
+        <div id="resultContainer" class="result-area">
+            <div class="result-title">
+                📡 匹配结果
+            </div>
+            <div id="resultContent" style="min-height: 100px;">
+                <div style="text-align: center; padding: 20px; color: #94a3b8;">
+                    ✨ 填写信息后点击匹配，系统将模拟接口查询归属号码库
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        ⚡ 基于模拟接口演示 | 输入前3后4，结合姓名归属地匹配虚拟号码库
+    </footer>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 模拟号码库 (包含姓名, 归属地, 完整手机号)
+    // 真实场景这里可替换为后端API, 演示匹配逻辑: 根据姓名/归属地模糊匹配 + 号码前3后4精准筛选
+    // --------------------------------------------------------------
+    const MOCK_DB = [
+        { id: 1, name: "张明轩", region: "北京", phone: "13812345678" },
+        { id: 1, name: "张明轩2", region: "北京2", phone: "13812345678" },
+        { id: 2, name: "李芳华", region: "上海", phone: "15987654321" },
+        { id: 3, name: "王建国", region: "广东深圳", phone: "18856789012" },
+        { id: 4, name: "陈思琪", region: "浙江杭州", phone: "13777889900" },
+        { id: 5, name: "刘子昂", region: "四川成都", phone: "15233445566" },
+        { id: 6, name: "赵敏君", region: "湖北武汉", phone: "18911223344" },
+        { id: 7, name: "周若彤", region: "江苏南京", phone: "16699887755" },
+        { id: 8, name: "吴振国", region: "重庆", phone: "17766554433" },
+        { id: 9, name: "郑欣怡", region: "陕西西安", phone: "13955667788" },
+        { id: 10, name: "林志远", region: "福建厦门", phone: "15099887766" },
+        // 增加一些边界测试: 同前3后4不同人不同归属地
+        { id: 11, name: "张明轩", region: "天津", phone: "13812349999" },      // 同前缀138 后四位9999
+        { id: 12, name: "李芳华", region: "苏州", phone: "15987650000" },      // 后四位0000
+        { id: 13, name: "欧阳静", region: "广东广州", phone: "18888881234" },   // 后四位1234
+        { id: 14, name: "诸葛亮", region: "山东济南", phone: "13579246800" },
+        { id: 15, name: "慕容晴", region: "云南昆明", phone: "18765432109" },
+    ];
+
+    // 辅助函数: 提取手机号前三位后四位
+    function getPhonePrefixSuffix(phone) {
+        if (!phone || phone.length !== 11) return { prefix: null, suffix: null };
+        return {
+            prefix: phone.substring(0, 3),
+            suffix: phone.substring(7, 11)  // 索引7~10 共4位
+        };
+    }
+
+    // 模拟延迟接口 (模拟网络请求)
+    function mockApiMatch(inputData) {
+        return new Promise((resolve) => {
+            // 模拟网络延迟 300~800ms
+            const delay = 400 + Math.random() * 400;
+            setTimeout(() => {
+                const { name, region, prefix3, suffix4 } = inputData;
+
+                // 清洗数据
+                const cleanName = (name || "").trim().toLowerCase();
+                const cleanRegion = (region || "").trim().toLowerCase();
+                const cleanPrefix = (prefix3 || "").trim();
+                const cleanSuffix = (suffix4 || "").trim();
+
+                // 1. 先过滤号码库中符合前缀和后缀的条目 (严格匹配前三位后四位)
+                let candidates = MOCK_DB.filter(item => {
+                    const { prefix, suffix } = getPhonePrefixSuffix(item.phone);
+                    if (!prefix || !suffix) return false;
+                    const prefixMatch = (cleanPrefix === "" ? true : prefix === cleanPrefix);
+                    const suffixMatch = (cleanSuffix === "" ? true : suffix === cleanSuffix);
+                    return prefixMatch && suffixMatch;
+                });
+
+                // 如果用户没填前后缀任意一项，放宽提示但为了演示友好，若都为空则提示输入不全
+                if ((cleanPrefix === "" || cleanSuffix === "") && (cleanPrefix !== "" || cleanSuffix !== "")) {
+                    // 部分填写: 只按已填部分匹配 (前or后)
+                    candidates = MOCK_DB.filter(item => {
+                        const { prefix, suffix } = getPhonePrefixSuffix(item.phone);
+                        let ok = true;
+                        if (cleanPrefix !== "") ok = ok && (prefix === cleanPrefix);
+                        if (cleanSuffix !== "") ok = ok && (suffix === cleanSuffix);
+                        return ok;
+                    });
+                }
+
+                // 2. 进一步根据姓名 + 归属地 做模糊匹配 (提升精确度)
+                // 优先级: 完全匹配姓名+归属地 > 匹配姓名或归属地
+                let scored = candidates.map(candidate => {
+                    let score = 0;
+                    const candName = candidate.name.toLowerCase();
+                    const candRegion = candidate.region.toLowerCase();
+
+                    if (cleanName !== "" && candName === cleanName) score += 10;
+                    else if (cleanName !== "" && candName.includes(cleanName)) score += 5;
+                    
+                    if (cleanRegion !== "") {
+                        // 归属地匹配: 完整包含关系 (比如 "北京" 匹配 "北京"， "广东深圳" 包含 "深圳")
+                        if (candRegion === cleanRegion) score += 8;
+                        else if (candRegion.includes(cleanRegion) || cleanRegion.includes(candRegion)) score += 4;
+                    }
+                    
+                    // 如果姓名和归属地完全匹配不出结果但号码前缀后缀一致，也保底分数
+                    if (score === 0 && (cleanName === "" && cleanRegion === "")) score = 1;
+                    return { candidate, score };
+                });
+
+                // 过滤掉分数为0但前后缀匹配? 保留任何前后缀匹配的最低都得有分? 上面若用户填了前后缀但无姓名归属地，score会是1（保底）
+                // 但更好的逻辑: 如果前后缀符合至少有一个匹配，且无姓名/归属地限制，则展示
+                if (cleanName === "" && cleanRegion === "") {
+                    // 未提供任何身份信息, 只展示号码前后缀匹配结果 (但保底)
+                    scored = scored.filter(s => s.score >= 1);
+                } else {
+                    // 提供了姓名/归属地信息: 至少得分>=2才认为有点关联（排除完全不沾边的）
+                    scored = scored.filter(s => s.score >= 2);
+                }
+
+                // 按分数排序高分优先
+                scored.sort((a, b) => b.score - a.score);
+                const matchedItems = scored.map(s => s.candidate);
+                
+                // 如果匹配数为0 返回空结果
+                if (matchedItems.length === 0) {
+                    resolve({ success: false, message: "未找到匹配的号码，请检查前三后四或姓名归属地是否准确", data: [] });
+                } else {
+                    resolve({ success: true, message: `成功匹配到 ${matchedItems.length} 个号码`, data: matchedItems });
+                }
+            }, delay);
+        });
+    }
+
+    // DOM 元素
+    const userNameInput = document.getElementById('userName');
+    const regionInput = document.getElementById('region');
+    const prefix3Input = document.getElementById('prefix3');
+    const suffix4Input = document.getElementById('suffix4');
+    const matchBtn = document.getElementById('matchBtn');
+    const resultContentDiv = document.getElementById('resultContent');
+    const livePreviewSpan = document.getElementById('livePreview');
+
+    // 实时更新预览号码
+    function updateLivePreview() {
+        let prefix = prefix3Input.value.trim();
+        let suffix = suffix4Input.value.trim();
+        if (prefix.length === 0) prefix = "***";
+        if (suffix.length === 0) suffix = "****";
+        const masked = `${prefix}****${suffix}`;
+        livePreviewSpan.innerText = masked.length > 15 ? masked.substring(0, 15) : masked;
+    }
+
+    prefix3Input.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '').slice(0, 3);
+        e.target.value = val;
+        updateLivePreview();
+    });
+    suffix4Input.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '').slice(0, 4);
+        e.target.value = val;
+        updateLivePreview();
+    });
+    // 限制只能数字
+    function enforceNumericOnly(inputEl) {
+        inputEl.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, parseInt(this.maxLength) || 20);
+            updateLivePreview();
+        });
+    }
+    enforceNumericOnly(prefix3Input);
+    enforceNumericOnly(suffix4Input);
+    
+    // 手动触发一次预览初始化
+    updateLivePreview();
+
+    // 显示加载状态
+    function setLoading(isLoading) {
+        if (isLoading) {
+            matchBtn.disabled = true;
+            matchBtn.innerHTML = `<span class="loading-spinner"></span> 匹配中...`;
+            resultContentDiv.innerHTML = `<div style="text-align: center; padding: 24px;"><span class="loading-spinner" style="border-color:#3b82f6; border-top-color:#fff;"></span> <span style="margin-left: 8px;">正在查询号码归属库...</span></div>`;
+        } else {
+            matchBtn.disabled = false;
+            matchBtn.innerHTML = `🔍 开始匹配号码`;
+        }
+    }
+
+    // 渲染匹配结果
+    function renderResult(matchedData, inputSummary) {
+        if (!matchedData || matchedData.length === 0) {
+            resultContentDiv.innerHTML = `
+                <div class="error-message">
+                    ⚠️ 未找到匹配号码<br>
+                    <span style="font-size:0.75rem;">请确认前三位+后四位准确，或尝试其他姓名/归属地</span>
+                </div>
+                <div style="margin-top: 12px; font-size: 0.7rem; color: #5b6e8c; text-align: center;">
+                    查询条件: 姓名 "${inputSummary.name}" | 归属地 "${inputSummary.region}"<br>
+                    号码模板 ${inputSummary.preview}
+                </div>
+            `;
+            return;
+        }
+
+        // 展示匹配结果列表
+        let itemsHtml = matchedData.map((item, idx) => {
+            // 脱敏中间四位展示效果，但完全显示号码前端，更直观可展示完整（模拟接口已确认隐私无妨）
+            const fullPhone = item.phone;
+            const maskedPhone = fullPhone.substring(0,3) + "****" + fullPhone.substring(7);
+            return `
+                <div class="match-item">
+                    <span class="match-label">📛 姓名</span>
+                    <span class="match-value">${escapeHtml(item.name)}</span>
+                </div>
+                <div class="match-item">
+                    <span class="match-label">📍 归属地</span>
+                    <span class="match-value">${escapeHtml(item.region)}</span>
+                </div>
+                <div class="match-item">
+                    <span class="match-label">📞 完整号码</span>
+                    <span class="match-value" style="font-family: monospace; letter-spacing: 0.5px;">${escapeHtml(fullPhone)} <span style="font-size:0.7rem; background:#eef2ff; padding:2px 8px; border-radius:20px;">匹配成功</span></span>
+                </div>
+                ${idx !== matchedData.length-1 ? '<div style="height: 1px; background:#eef2ff; margin:12px 0;"></div>' : ''}
+            `;
+        }).join('');
+
+        resultContentDiv.innerHTML = `
+            <div class="result-card">
+                <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <span class="badge-success">✅ 命中 ${matchedData.length} 条记录</span>
+                    <span style="font-size: 0.7rem; color:#2563eb;">🎯 智能排序(关联度)</span>
+                </div>
+                ${itemsHtml}
+                <div style="margin-top: 12px; font-size: 0.7rem; background: #f1f5f9; border-radius: 20px; padding: 8px 12px; color:#334155;">
+                    🔎 匹配依据: 前3后4 + 姓名/归属地相似度
+                </div>
+            </div>
+        `;
+    }
+
+    // 简单防XSS
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // 主要匹配逻辑
+    async function handleMatch() {
+        // 获取输入值
+        let name = userNameInput.value.trim();
+        let region = regionInput.value.trim();
+        let prefix = prefix3Input.value.trim();
+        let suffix = suffix4Input.value.trim();
+
+        // 基本校验: 前三后四 要么同时为空，要么至少填一个？但用户体验友好，提示建议至少填写前缀或者后缀
+        if (prefix.length === 0 && suffix.length === 0) {
+            resultContentDiv.innerHTML = `<div class="error-message">⚠️ 请至少填写电话号码前三位或后四位，以便精准匹配。</div>`;
+            return;
+        }
+        if ((prefix.length > 0 && prefix.length !== 3)) {
+            resultContentDiv.innerHTML = `<div class="error-message">📵 前三位必须为3位数字 (当前${prefix.length}位)</div>`;
+            return;
+        }
+        if ((suffix.length > 0 && suffix.length !== 4)) {
+            resultContentDiv.innerHTML = `<div class="error-message">📵 后四位必须为4位数字 (当前${suffix.length}位)</div>`;
+            return;
+        }
+        if (prefix.length === 3 && isNaN(Number(prefix))) {
+            resultContentDiv.innerHTML = `<div class="error-message">前三位只能包含数字</div>`;
+            return;
+        }
+        if (suffix.length === 4 && isNaN(Number(suffix))) {
+            resultContentDiv.innerHTML = `<div class="error-message">后四位只能包含数字</div>`;
+            return;
+        }
+
+        // 构建请求参数
+        const requestData = {
+            name: name,
+            region: region,
+            prefix3: prefix,
+            suffix4: suffix
+        };
+
+        // 预览字符串用于展示
+        const previewNumber = `${prefix || '***'}****${suffix || '****'}`;
+        
+        setLoading(true);
+        try {
+            const response = await mockApiMatch(requestData);
+            if (response.success) {
+                const summary = {
+                    name: name || '(未填)',
+                    region: region || '(未填)',
+                    preview: previewNumber
+                };
+                renderResult(response.data, summary);
+            } else {
+                resultContentDiv.innerHTML = `
+                    <div class="error-message">
+                        🔍 ${escapeHtml(response.message)}
+                        <div style="margin-top: 8px; font-size:0.75rem;">👉 尝试调整归属地或者姓名关键词</div>
+                    </div>
+                    <div style="margin-top: 12px; font-size:0.7rem; text-align:center;">条件: ${previewNumber}</div>
+                `;
+            }
+        } catch (err) {
+            console.error(err);
+            resultContentDiv.innerHTML = `<div class="error-message">网络异常，请稍后重试</div>`;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    matchBtn.addEventListener('click', handleMatch);
+    // 支持回车快捷触发 (可选)
+    const inputs = [userNameInput, regionInput, prefix3Input, suffix4Input];
+    inputs.forEach(inp => {
+        inp.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleMatch();
+            }
+        });
+    });
+
+    // 页面初始展示友好示例填充 (可选 不自动填充但可演示)
+    // 为了演示体验，预置一组示例占位但不自动提交
+    userNameInput.placeholder = "例如: 张明轩";
+    regionInput.placeholder = "例如: 北京 / 广东深圳";
+    prefix3Input.placeholder = "138";
+    suffix4Input.placeholder = "5678";
+    updateLivePreview();
+</script>
+</body>
+</html>
